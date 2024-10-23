@@ -30,33 +30,30 @@ testing dataset on random forest.
 
 
 rf_model = RandomForestClassifier()
-cv_scores = cross_val_score(rf_model,X,y,cv=5,scoring='accuracy')
+#cv_scores = cross_val_score(rf_model,X,y,cv=5,scoring='accuracy')
 
-print(f"random forest Cross-Validated Accuracy: {cv_scores.mean()}")
-    #accuracy 0.745
+#print(f"random forest Cross-Validated Accuracy: {cv_scores.mean()}")
+    #accuracy 0.754
 
 knn_model = KNeighborsClassifier(
     n_neighbors = 10  # Number of neighbors to consider
 )
 
-cv_scores = cross_val_score(knn_model,X,y,cv=5,scoring='accuracy')
+#cv_scores = cross_val_score(knn_model,X,y,cv=5,scoring='accuracy')
 
-print(f"k nearest neighbors (KNN) Cross-Validated Accuracy: {cv_scores.mean()}")
+#print(f"k nearest neighbors (KNN) Cross-Validated Accuracy: {cv_scores.mean()}")
     #accuracy 0.773
 
 """
 training gaussian model
 """
-y = np.array(y)
-class_counts = np.bincount(y)  
-prior = class_counts / len(y)
 
 
-gnb_model = GaussianNB(priors=prior)
+gnb_model = GaussianNB()
 
 
 cv_scores = cross_val_score(gnb_model, X, y, cv=5, scoring='accuracy')
 
 
 print(f"Gaussian Naive Bayes Cross-Validated Accuracy: {cv_scores.mean()}")
-    #accuracy 0.746
+    #accuracy 0.68

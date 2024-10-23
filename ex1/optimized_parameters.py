@@ -106,15 +106,15 @@ def testing_parameters_knn(n_neighbors_list,weight_list,metric_list):
 
 if __name__ == "__main__":
 
-    lr = [0.01,0.05,0.005]
-    max_iter = [1000,500]
+    lr = [0.01,0.05,0.1]
+    max_iter = [1000,5000]
     solvers = ['lbfgs', 'liblinear', 'newton-cg', 'newton-cholesky', 'sag', 'saga']
 
     print(testing_parameters_lr(lr,max_iter,solvers))
-        #[0.05 1000 'lbfgs' np.float64(0.7538690476190475)]
+        #[0.05 1000 'liblinear' np.float64(0.7708333333333334)]
 
     criterion = ['gini', 'entropy', 'log_loss']
-    max_depth = [None,10,20,30]
+    max_depth = [None,10,20,3]
     max_features = ['sqrt', 'log2']
     min_sample_split = [5,10,100]
     print(testing_parameters_rf(criterion,max_depth,max_features,min_sample_split))
@@ -126,3 +126,18 @@ if __name__ == "__main__":
     metric = ['minkowski','euclidean','manhattan']
     print(testing_parameters_knn(n_neighbors,weights,metric))
         #[5 'distance' 'minkowski' np.float64(0.7848214285714284)]
+
+    y = np.array(y)
+    class_counts = np.bincount(y)  
+    prior = class_counts / len(y)
+
+
+    gnb_model = GaussianNB(priors=prior)
+
+
+    cv_scores = cross_val_score(gnb_model, X, y, cv=5, scoring='accuracy')
+
+
+    print(f"Gaussian Naive Bayes Cross-Validated Accuracy: {cv_scores.mean()}")
+        #accuracy 0.68
+
