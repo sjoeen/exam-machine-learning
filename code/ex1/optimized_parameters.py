@@ -1,9 +1,10 @@
-from sklearn.linear_model import LogisticRegression
+from LogisticRegression import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.model_selection import cross_val_score
 from typing import Optional,Tuple
+from sklearn.metrics import f1_score, make_scorer
 import pandas as pd
 import numpy as np
 
@@ -12,8 +13,9 @@ y = pd.read_csv('label_train.csv')
 y = y.values.ravel()
     #transform into 1d array
 
+f1_scorer = make_scorer(f1_score, average='weighted')
 
-def testing_parameters_lr(C_list,max_iter_list,solver_list):
+def testing_parameters_lr(lr_list,max_iter_list,treshold_list):
     """
     tests all combination of given parameters to optimize the accuracy of
     the logistic regression model.
@@ -22,16 +24,13 @@ def testing_parameters_lr(C_list,max_iter_list,solver_list):
     results = []
         #array to save results
         
-    for c in C_list:
+    for lr in lr_list:
         for max_iter in max_iter_list:
-            for solver in solver_list:
+                for treshold in treshold_list:
 
-                lr_model = LogisticRegression(C = c,
-                               max_iter = max_iter,
-                               solver = solver)
-
-                cv_scores = cross_val_score(lr_model, X, y, cv=5, scoring='accuracy')
-                results.append((c, max_iter, solver, cv_scores.mean()))
+                    lr_model = LogisticRegression(lr, max_iter,treshold)
+                    cv_scores = cross_val_score(lr_model, X, y, cv=5, scoring='accuracy')
+                    results.append((lr, max_iter,treshold, cv_scores.mean()))
 
     results = np.array(results, dtype=object)
         #convert into np array to use np.argmax
@@ -108,10 +107,10 @@ if __name__ == "__main__":
 
     lr = [0.01,0.05,0.1]
     max_iter = [1000,5000]
-    solvers = ['lbfgs', 'liblinear', 'newton-cg', 'newton-cholesky', 'sag', 'saga']
+    treshold = [0.3,0.4,0.5,0.6,0.7]
 
-    print(testing_parameters_lr(lr,max_iter,solvers))
-        #[0.05 1000 'liblinear' np.float64(0.7708333333333334)]
+    print(testing_parameters_lr(lr,max_iter,treshold))
+        #[0.1 1000 0.3 np.float64(0.7002976190476191)]
 
     criterion = ['gini', 'entropy', 'log_loss']
     max_depth = [None,10,20,3]
